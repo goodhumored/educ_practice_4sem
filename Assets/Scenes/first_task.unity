@@ -1468,6 +1468,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e32ad3e214d082cda89beffb566ce0fc, type: 3}
   - {fileID: 8300000, guid: 033da115baf0cc5e6b917bb3736a5067, type: 3}
   - {fileID: 8300000, guid: 4987101f8408534719958c7f18d67aca, type: 3}
+  landSound: {fileID: 8300000, guid: 227c0d4289998c2058d7a760b7382ee4, type: 3}
+  jumpSound: {fileID: 8300000, guid: 254b9ace604fbeaab862caf7edb8f052, type: 3}
   groundDistance: 0
   jumpForce: 400
 --- !u!195 &2087878828

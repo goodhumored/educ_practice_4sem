@@ -20,6 +20,8 @@ public class PudgeController : MonoBehaviour
     public List<AudioClip> stepSounds;
     public List<AudioClip> chainSounds;
     public List<AudioClip> userFoundSounds;
+    public AudioClip landSound;
+    public AudioClip jumpSound;
 
     public float groundDistance;
 
@@ -46,16 +48,13 @@ public class PudgeController : MonoBehaviour
 
     private void Step()
     {
-        stepAudioSource.clip = stepSounds[Random.Range(0, stepSounds.Count)];
-        chainAudioSource.clip = chainSounds[Random.Range(0, stepSounds.Count)];
-        stepAudioSource.Play();
-        chainAudioSource.Play();
+        PlayRandomChain();
+        PlayRandomStep();
     }
 
     private void UpdateGroundDistance()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 100f))
+        if (Physics.Raycast(transform.position, Vector3.down, out var hit, 100f))
         {
             groundDistance = hit.distance;
         }
@@ -101,8 +100,7 @@ public class PudgeController : MonoBehaviour
 
     private void PlayUserFoundSfx()
     {
-        speechAudioSource.clip = userFoundSounds[Random.Range(0, userFoundSounds.Count)];
-        speechAudioSource.Play();
+        Say(userFoundSounds[Random.Range(0, userFoundSounds.Count)]);
     }
 
     private void OnUserLost()
@@ -135,6 +133,9 @@ public class PudgeController : MonoBehaviour
                 _rb.isKinematic = false;
                 _rb.useGravity = true;
                 _rb.AddRelativeForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+                Say(jumpSound);
+                PlayRandomStep();
+                PlayRandomChain();
                 return true;
             }
 
@@ -162,6 +163,28 @@ public class PudgeController : MonoBehaviour
             _rb.useGravity = false;
             _jumping = false;
             animator.SetTrigger("Grounded");
+            
+            Say(landSound);
+            PlayRandomStep();
+            PlayRandomChain();
         }
+    }
+
+    private void Say(AudioClip clip)
+    {
+        speechAudioSource.clip = clip;
+        speechAudioSource.Play();
+    }
+
+    private void PlayRandomStep()
+    {
+        stepAudioSource.clip = stepSounds[Random.Range(0, stepSounds.Count)];
+        stepAudioSource.Play();
+    }
+
+    private void PlayRandomChain()
+    {
+        chainAudioSource.clip = chainSounds[Random.Range(0, chainSounds.Count)];
+        chainAudioSource.Play();
     }
 }
