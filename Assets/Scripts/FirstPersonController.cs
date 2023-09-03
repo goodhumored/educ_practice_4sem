@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -11,6 +13,7 @@ namespace StarterAssets
 #endif
 	public class FirstPersonController : MonoBehaviour
 	{
+		public UnityAction OnJump;
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
 		public float MoveSpeed = 4.0f;
@@ -202,6 +205,7 @@ namespace StarterAssets
 		{
 			if (Grounded)
 			{
+				
 				// reset the fall timeout timer
 				_fallTimeoutDelta = FallTimeout;
 
@@ -216,6 +220,14 @@ namespace StarterAssets
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					try
+					{
+						OnJump();
+					}
+					catch (Exception e)
+					{
+						Debug.Log("OnJump event is not set");
+					}
 				}
 
 				// jump timeout
