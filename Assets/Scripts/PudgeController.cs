@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class PudgeController : MonoBehaviour
 {
@@ -23,11 +24,16 @@ public class PudgeController : MonoBehaviour
     public float groundDistance;
 
     private Rigidbody _rb;
+    
+    public float jumpForce;
+
+    private bool _jumping;
 
     void Start()
     {
         userSeekingModule.OnUserFound += OnUserFound;
         userSeekingModule.OnUserLost += OnUserLost;
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -85,8 +91,12 @@ public class PudgeController : MonoBehaviour
 
     private void OnUserJump()
     {
-        animator.SetTrigger("Jump");
-        Jump();
+        if (_jumping) return;
+        if (Jump())
+        {
+            _jumping = true;
+            animator.SetTrigger("Jump");
+        }
     }
 
     private void PlayUserFoundSfx()
@@ -101,11 +111,57 @@ public class PudgeController : MonoBehaviour
         user = null;
     }
 
-    private void Jump()
+    private bool Jump()
     {
-        if (groundDistance <= 0.1f)
+        try
         {
-            _rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
+            if (groundDistance <= 0.1f)
+            {
+                if (agent.enabled)
+                {
+                    // set the agents target to where you are before the jump
+                    // this stops her before she jumps. Alternatively, you could
+                    // cache this value, and set it again once the jump is complete
+                    // to continue the original move
+                    agent.SetDestination(transform.position);
+                    // disable the agent
+                    agent.updatePosition = false;
+                    agent.updateRotation = false;
+                    agent.isStopped = true;
+                }
+
+                Debug.Log("Jumping");
+                // make the jump
+                _rb.isKinematic = false;
+                _rb.useGravity = true;
+                _rb.AddRelativeForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_jumping && collision.collider != null && collision.collider.CompareTag("Ground"))
+        {
+            Debug.Log("Grounded");
+            if (agent.enabled)
+            {
+                agent.updatePosition = true;
+                agent.updateRotation = true;
+                agent.isStopped = false;
+            }
+
+            _rb.isKinematic = true;
+            _rb.useGravity = false;
+            _jumping = false;
+            animator.SetTrigger("Grounded");
         }
     }
 }

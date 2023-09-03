@@ -1146,7 +1146,7 @@ GameObject:
   - component: {fileID: 1800724202}
   m_Layer: 0
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -1447,7 +1447,7 @@ MonoBehaviour:
   userSeekingModule: {fileID: 1963047517}
   agent: {fileID: 2087878828}
   user: {fileID: 0}
-  stopDistance: 1
+  stopDistance: 2
   stepAudioSource: {fileID: 1549503772}
   chainAudioSource: {fileID: 345582005}
   speechAudioSource: {fileID: 413715945}
@@ -1469,8 +1469,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 033da115baf0cc5e6b917bb3736a5067, type: 3}
   - {fileID: 8300000, guid: 4987101f8408534719958c7f18d67aca, type: 3}
   groundDistance: 0
-  gravity: -15
-  jumpHeight: 1.2
+  jumpForce: 400
 --- !u!195 &2087878828
 NavMeshAgent:
   m_ObjectHideFlags: 0
